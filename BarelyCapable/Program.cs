@@ -23,10 +23,16 @@ namespace BarelyCapable
             }
 
             int count = 0;
+            var skippedShapes = new List<int>();
             foreach (var shape in input.AvailableShapes.OrderByDescending(s => s.capacity).ThenBy(s => s.bounding_box))
             {
+                if (skippedShapes.Any(sid => sid == shape.shape_id)) { continue; }
                 count++;
-                PlaceShape(grid, shape);
+                var placed = PlaceShape(grid, shape);
+                if (!placed)
+                {
+                    skippedShapes.Add(shape.shape_id);
+                }
             }
 
 
@@ -57,7 +63,7 @@ namespace BarelyCapable
         }
 
 
-        public static void PlaceShape(int[,] grid, Shape shape)
+        public static bool PlaceShape(int[,] grid, Shape shape)
         {
             int count = 0;
             var used = new List<(int row, int col)>();
@@ -83,16 +89,18 @@ namespace BarelyCapable
                                 grid[place.row, place.col] = 1;
                             }
 
-                            return;
+                            return true;
                         }
                     }
                 }
                 else
                 {
-                    return;
+                    return false;
                 }
 
             }
+
+            return false;
         }
 
         public static List<(int row, int col)> CanPlace(Orientation orientation, int[,] grid, (int row, int col) cell)
