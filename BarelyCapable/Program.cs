@@ -13,7 +13,7 @@ namespace BarelyCapable
         static void Main(string[] args)
         {
             var root = JsonConvert.DeserializeObject<Root>(File.ReadAllText("shapes_file.json"));
-            var input = ParseInput(File.ReadAllLines("map_1.input"), root.shapes);
+            var input = ParseInput(File.ReadAllLines("map_2.input"), root.shapes);
 
             var grid = new int[input.Rows, input.Cols];
 
@@ -22,8 +22,10 @@ namespace BarelyCapable
                 grid[reservedSpacePosition.X, reservedSpacePosition.Y] = 1;
             }
 
+            int count = 0;
             foreach (var shape in input.AvailableShapes.OrderByDescending(s => s.capacity).ThenBy(s => s.bounding_box))
             {
+                count++;
                 PlaceShape(grid, shape);
             }
 
@@ -57,27 +59,39 @@ namespace BarelyCapable
 
         public static void PlaceShape(int[,] grid, Shape shape)
         {
-            var start = FindEmptyCell(grid);
+            int count = 0;
+            var used = new List<(int row, int col)>();
 
-            if (start.row != -1)
+            while (shape.Places == null && count++ < 10000)
             {
-                foreach (var orientation in shape.orientations)
+                var start = FindEmptyCell(grid, used);
+
+                used.Add(start);
+
+                if (start.row != -1)
                 {
-                    var places = CanPlace(orientation, grid, start);
-
-                    if (places != null)
+                    foreach (var orientation in shape.orientations)
                     {
-                        shape.Places = places;
+                        var places = CanPlace(orientation, grid, start);
 
-                        foreach (var place in shape.Places)
+                        if (places != null)
                         {
-                            grid[place.row, place.col] = 1;
+                            shape.Places = places;
+
+                            foreach (var place in shape.Places)
+                            {
+                                grid[place.row, place.col] = 1;
+                            }
+
+                            return;
                         }
-
-                        return;
                     }
-
                 }
+                else
+                {
+                    return;
+                }
+
             }
         }
 
@@ -87,14 +101,19 @@ namespace BarelyCapable
 
             var result = new List<(int row, int col)>();
 
-
             foreach (var oCell in orientation.cells)
             {
                 (int row, int col) current = (oCell[0] + cell.row, oCell[1] + cell.col);
 
                 result.Add(current);
 
-                if (grid[current.row, current.col] == 0) { continue; }
+                if (current.row < grid.GetLength(0) && current.col < grid.GetLength(1))
+                {
+                    if (grid[current.row, current.col] == 0)
+                    {
+                        continue;
+                    }
+                }
 
                 canPlace = false;
 
@@ -104,13 +123,13 @@ namespace BarelyCapable
             return canPlace ? result : null;
         }
 
-        public static (int row, int col) FindEmptyCell(int[,] grid)
+        public static (int row, int col) FindEmptyCell(int[,] grid, List<(int row, int col)> used)
         {
             for (int row = 0; row < grid.GetLength(0); row++)
             {
-                for (int col = 0; col < grid.GetLength(0); col++)
+                for (int col = 0; col < grid.GetLength(1); col++)
                 {
-                    if (grid[col, row] == 0)
+                    if (grid[row, col] == 0 && used.All(x=> x.row != row && x.col != col))
                     {
                         return (row, col);
                     }
