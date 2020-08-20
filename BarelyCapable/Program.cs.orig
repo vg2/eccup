@@ -15,10 +15,7 @@ namespace BarelyCapable
             var root = JsonConvert.DeserializeObject<Root>(File.ReadAllText("shapes_file.json"));
             var input = ParseInput(File.ReadAllLines("map_1.input"), root.shapes);
 
-            var grid = new int[7, 7];
-
-            PlaceShape(grid, root.shapes.First());
-
+<<<<<<< HEAD
             List<Shape> shapes = new List<Shape>()
             {
                 new Shape(){
@@ -90,6 +87,13 @@ namespace BarelyCapable
             }
 
             File.WriteAllText("output_file.txt", stringBuilder.ToString().TrimEnd());
+=======
+            var grid = new int[7,7];
+
+            PlaceShape(grid, root.shapes.First());
+
+            Console.WriteLine("Hello World!");
+>>>>>>> 55ecf20a4fe9197068ea1eb8439d233750e70e54
         }
 
 
@@ -97,14 +101,12 @@ namespace BarelyCapable
         {
             var start = FindEmptyCell(grid);
 
-            if (start.row != -1)
-            {
+            if (start.row != -1) {
                 foreach (var orientation in shape.orientations)
                 {
                     var places = CanPlace(orientation, grid, start);
 
-                    if (places != null)
-                    {
+                    if (places != null) {
                         shape.Places = places;
 
                         return;
@@ -112,21 +114,23 @@ namespace BarelyCapable
 
                 }
             }
+
+            
         }
 
-        public static List<(int row, int col)> CanPlace(Orientation orientation, int[,] grid, (int row, int col) cell)
+        public static List<(int row, int col)> CanPlace(Orientation orientation, int[,] grid, (int row, int col) cell) 
         {
             bool canPlace = true;
 
             var result = new List<(int row, int col)>();
 
 
-            foreach (var oCell in orientation.cells)
+            foreach (var oCell in orientation.cells) 
             {
                 (int row, int col) current = (oCell[0] + cell.row, oCell[1] + cell.col);
 
                 result.Add(current);
-
+                
                 if (grid[current.row, current.col] == 0) { continue; }
 
                 canPlace = false;
@@ -137,7 +141,7 @@ namespace BarelyCapable
             return canPlace ? result : null;
         }
 
-        public static (int row, int col) FindEmptyCell(int[,] grid)
+        public static (int row, int col) FindEmptyCell(int[,] grid) 
         {
             for (int row = 0; row < grid.GetLength(0); row++)
             {
