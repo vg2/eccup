@@ -62,6 +62,21 @@ namespace BarelyCapable
             File.WriteAllText("output_file.txt", stringBuilder.ToString().TrimEnd());
         }
 
+        private static bool IsBoxEmpty(int[,] grid, (int row, int col) cell, int size)
+        {
+            for (int r = 0; r < size; r++)
+            {
+                for (int c = 0; c < size; c++)
+                {
+                    if (grid[cell.row + r, cell.col + c] != 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
 
         public static bool PlaceShape(int[,] grid, Shape shape)
         {
@@ -139,7 +154,7 @@ namespace BarelyCapable
             {
                 for (int col = last.col; col < grid.GetLength(1); col++)
                 {
-                    if (grid[row, col] == 0 && used.All(x=> x.row != row && x.col != col))
+                    if (grid[row, col] == 0 && used.All(x => x.row != row && x.col != col))
                     {
                         return (row, col);
                     }
