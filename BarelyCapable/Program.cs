@@ -22,53 +22,15 @@ namespace BarelyCapable
                 grid[reservedSpacePosition.X, reservedSpacePosition.Y] = 1;
             }
 
-
-
-            PlaceShape(grid, root.shapes.First());
-
-            List<Shape> shapes = new List<Shape>()
+            foreach (var shape in input.AvailableShapes)
             {
-                new Shape(){
-                    shape_id = 1,
-                    orientations = new List<Orientation>()
-                    {
-                        new Orientation()
-                        {
-                            cells = new List<List<int>>()
-                            {
-                                new List<int>()
-                                {
-                                    0, 0
-                                },
-                                new List<int>()
-                                {
-                                    0, 1
-                                }
-                            }
-                        }
-                    }
-                },
-                new Shape(){
-                    shape_id = 2,
-                    orientations = new List<Orientation>()
-                    {
-                        new Orientation()
-                        {
-                            cells = new List<List<int>>()
-                            {
-                                new List<int>()
-                                {
-                                    10, 10
-                                },
-                                new List<int>()
-                                {
-                                    10, 11
-                                }
-                            }
-                        }
-                    }
-                },
-            };
+                PlaceShape(grid, shape);
+            }
+
+
+
+            List<Shape> shapes = input.AvailableShapes.Where(x => x.Places != null).ToList();
+            ;
 
 
             PrintOutputFile(shapes);
@@ -113,6 +75,11 @@ namespace BarelyCapable
                     if (places != null)
                     {
                         shape.Places = places;
+
+                        foreach (var place in shape.Places)
+                        {
+                            grid[place.row, place.col] = 1;
+                        }
 
                         return;
                     }
