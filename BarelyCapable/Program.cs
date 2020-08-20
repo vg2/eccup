@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace BarelyCapable
         static void Main(string[] args)
         {
             var root = JsonConvert.DeserializeObject<Root>(File.ReadAllText("shapes_file.json"));
-            var input = ParseInput(File.ReadAllLines("map_2.input"), root.shapes);
+            var input = ParseInput(File.ReadAllLines("map_3.input"), root.shapes);
 
             var grid = new int[input.Rows, input.Cols];
 
@@ -34,7 +35,6 @@ namespace BarelyCapable
                     skippedShapes.Add(shape.shape_id);
                 }
             }
-
 
 
             List<Shape> shapes = input.AvailableShapes.Where(x => x.Places != null).ToList();
@@ -133,9 +133,11 @@ namespace BarelyCapable
 
         public static (int row, int col) FindEmptyCell(int[,] grid, List<(int row, int col)> used)
         {
-            for (int row = 0; row < grid.GetLength(0); row++)
+            var last = used.Count > 0 ?  used.Last() : (row:0, col:0);
+
+            for (int row = last.row; row < grid.GetLength(0); row++)
             {
-                for (int col = 0; col < grid.GetLength(1); col++)
+                for (int col = last.col; col < grid.GetLength(1); col++)
                 {
                     if (grid[row, col] == 0 && used.All(x=> x.row != row && x.col != col))
                     {
