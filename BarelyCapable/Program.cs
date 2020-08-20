@@ -9,6 +9,8 @@ namespace BarelyCapable
     class Program
     {
         public static Input _input = null;
+        public static int starterRow = 0;
+        public static int starterCol = 0;
 
         static void Main(string[] args)
         {
@@ -25,8 +27,8 @@ namespace BarelyCapable
             var skippedShapes = new List<int>();
             foreach (var shape in _input.AvailableShapes.OrderByDescending(s => s.capacity).ThenBy(s => s.bounding_box))
             {
-                if (skippedShapes.Any(sid => sid == shape.shape_id)) { continue; }
                 count++;
+                if (skippedShapes.Any(sid => sid == shape.shape_id)) { continue; }
                 var placed = PlaceShape(grid, shape);
                 if (!placed)
                 {
@@ -89,7 +91,7 @@ namespace BarelyCapable
             int count = 0;
             var used = new List<(int row, int col)>();
 
-            while (shape.Places == null && count++ < 100000)
+            while (shape.Places == null && count++ < 10000000)
             {
                 var start = FindEmptyCell(grid, used, shape.bounding_box);
 
@@ -154,17 +156,33 @@ namespace BarelyCapable
 
         public static (int row, int col) FindEmptyCell(int[,] grid, List<(int row, int col)> used, int size)
         {
-            var last = used.Count > 0 ? used.Last() : (row: 0, col: 0);
+            bool effectStarter = true;
+            bool firstLoop = true;
+
+
+            var last = used.Count > 0 ? used.Last() : (row: starterRow, col: starterCol);
 
             for (int row = last.row; row < grid.GetLength(0); row++)
             {
-                for (int col = last.col; col < grid.GetLength(1); col++)
+                for (int col = firstLoop ? last.col:0; col < grid.GetLength(1); col++)
                 {
+                    //if (effectStarter && grid[row, col] != 0)
+                    //{
+                    //    starterRow = row;
+                    //    starterCol = col;
+                    //}
+                    //else if(grid[row, col] == 0)
+                    //{
+                    //    effectStarter = false;
+                    //}
+
                     if (grid[row, col] == 0 && IsBoxEmpty(grid, (row, col), size) && used.All(x => x.row != row && x.col != col))
                     {
                         return (row, col);
                     }
                 }
+
+                firstLoop = false;
             }
 
             return (-1, -1);
