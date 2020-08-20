@@ -44,12 +44,9 @@ namespace BarelyCapable
             {
                 stringBuilder.Append($"{shape.shape_id}");
 
-                foreach (var coordinate in shape.orientations)
+                foreach (var coordinate in shape.Places)
                 {
-                    foreach (var position in coordinate.Positions)
-                    {
-                        stringBuilder.Append($"|{position.X},{position.Y}");
-                    }
+                    stringBuilder.Append($"|{coordinate.row},{coordinate.col}");
                 }
 
                 stringBuilder.AppendLine();
