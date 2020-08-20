@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -62,13 +61,21 @@ namespace BarelyCapable
             File.WriteAllText("output_file.txt", stringBuilder.ToString().TrimEnd());
         }
 
-        private static bool IsBoxEmpty(int[,] grid, (int row, int col) cell, int size)
+        private static bool IsBoxEmpty(int[,] grid, (int row, int col) cell, int size, Input input)
         {
             for (int r = 0; r < size; r++)
             {
                 for (int c = 0; c < size; c++)
                 {
-                    if (grid[cell.row + r, cell.col + c] != 0)
+                    var rowSize = cell.row + r;
+                    var collSize = cell.col + c;
+
+                    if (rowSize >= input.Rows || collSize >= input.Cols)
+                    {
+                        continue;
+                    }
+
+                    if (grid[rowSize, cell.col + c] != 0)
                     {
                         return false;
                     }
@@ -148,7 +155,7 @@ namespace BarelyCapable
 
         public static (int row, int col) FindEmptyCell(int[,] grid, List<(int row, int col)> used)
         {
-            var last = used.Count > 0 ?  used.Last() : (row:0, col:0);
+            var last = used.Count > 0 ? used.Last() : (row: 0, col: 0);
 
             for (int row = last.row; row < grid.GetLength(0); row++)
             {
