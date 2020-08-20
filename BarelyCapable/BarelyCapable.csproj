@@ -13,6 +13,18 @@
     <None Update="map_1.input">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="map_2.input">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="map_3.input">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="map_4.input">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="map_5.input">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="shapes_file.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
