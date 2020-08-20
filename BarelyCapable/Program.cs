@@ -15,7 +15,14 @@ namespace BarelyCapable
             var root = JsonConvert.DeserializeObject<Root>(File.ReadAllText("shapes_file.json"));
             var input = ParseInput(File.ReadAllLines("map_1.input"), root.shapes);
 
-            var grid = new int[7, 7];
+            var grid = new int[input.Rows, input.Cols];
+
+            foreach (var reservedSpacePosition in input.ReservedSpacePositions)
+            {
+                grid[reservedSpacePosition.X, reservedSpacePosition.Y] = 1;
+            }
+
+
 
             PlaceShape(grid, root.shapes.First());
 
