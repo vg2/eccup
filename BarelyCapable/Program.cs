@@ -40,18 +40,15 @@ namespace BarelyCapable
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            foreach (var shapeType in outputShapes.GroupBy(r => r.shape_id))
+            foreach (var shape in outputShapes)
             {
-                stringBuilder.Append($"{shapeType.Key}");
+                stringBuilder.Append($"{shape.shape_id}");
 
-                foreach (var shape in shapeType)
+                foreach (var coordinate in shape.orientations)
                 {
-                    foreach (var coordinate in shape.orientations)
+                    foreach (var position in coordinate.Positions)
                     {
-                        foreach (var position in coordinate.Positions)
-                        {
-                            stringBuilder.Append($"|{position.X},{position.Y}");
-                        }
+                        stringBuilder.Append($"|{position.X},{position.Y}");
                     }
                 }
 
