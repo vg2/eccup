@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace BarelyCapable
@@ -19,6 +20,7 @@ namespace BarelyCapable
         {
             public int rotation { get; set; }
             public List<List<int>> cells { get; set; }
+            public List<Position> Positions => cells?.Select(cells => new Position { X = cells[0], Y = cells[1] }).ToList();
         }
 
         public class Shape
