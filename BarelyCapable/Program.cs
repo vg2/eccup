@@ -8,23 +8,23 @@ namespace BarelyCapable
 {
     class Program
     {
-
+        public static Input _input = null;
 
         static void Main(string[] args)
         {
             var root = JsonConvert.DeserializeObject<Root>(File.ReadAllText("shapes_file.json"));
-            var input = ParseInput(File.ReadAllLines("map_3.input"), root.shapes);
+            _input = ParseInput(File.ReadAllLines("map_2.input"), root.shapes);
 
-            var grid = new int[input.Rows, input.Cols];
+            var grid = new int[_input.Rows, _input.Cols];
 
-            foreach (var reservedSpacePosition in input.ReservedSpacePositions)
+            foreach (var reservedSpacePosition in _input.ReservedSpacePositions)
             {
                 grid[reservedSpacePosition.X, reservedSpacePosition.Y] = 1;
             }
 
             int count = 0;
             var skippedShapes = new List<int>();
-            foreach (var shape in input.AvailableShapes.OrderByDescending(s => s.capacity).ThenBy(s => s.bounding_box))
+            foreach (var shape in _input.AvailableShapes.OrderByDescending(s => s.capacity).ThenBy(s => s.bounding_box))
             {
                 if (skippedShapes.Any(sid => sid == shape.shape_id)) { continue; }
                 count++;
@@ -36,7 +36,7 @@ namespace BarelyCapable
             }
 
 
-            List<Shape> shapes = input.AvailableShapes.Where(x => x.Places != null).ToList();
+            List<Shape> shapes = _input.AvailableShapes.Where(x => x.Places != null).ToList();
 
 
             PrintOutputFile(shapes);
@@ -61,7 +61,7 @@ namespace BarelyCapable
             File.WriteAllText("output_file.txt", stringBuilder.ToString().TrimEnd());
         }
 
-        private static bool IsBoxEmpty(int[,] grid, (int row, int col) cell, int size, Input input)
+        private static bool IsBoxEmpty(int[,] grid, (int row, int col) cell, int size)
         {
             for (int r = 0; r < size; r++)
             {
@@ -70,7 +70,7 @@ namespace BarelyCapable
                     var rowSize = cell.row + r;
                     var collSize = cell.col + c;
 
-                    if (rowSize >= input.Rows || collSize >= input.Cols)
+                    if (rowSize >= _input.Rows || collSize >= _input.Cols)
                     {
                         continue;
                     }
@@ -90,9 +90,9 @@ namespace BarelyCapable
             int count = 0;
             var used = new List<(int row, int col)>();
 
-            while (shape.Places == null && count++ < 10000)
+            while (shape.Places == null && count++ < 100000)
             {
-                var start = FindEmptyCell(grid, used);
+                var start = FindEmptyCell(grid, used, shape.bounding_box);
 
                 used.Add(start);
 
@@ -153,7 +153,7 @@ namespace BarelyCapable
             return canPlace ? result : null;
         }
 
-        public static (int row, int col) FindEmptyCell(int[,] grid, List<(int row, int col)> used)
+        public static (int row, int col) FindEmptyCell(int[,] grid, List<(int row, int col)> used, int size)
         {
             var last = used.Count > 0 ? used.Last() : (row: 0, col: 0);
 
@@ -161,7 +161,7 @@ namespace BarelyCapable
             {
                 for (int col = last.col; col < grid.GetLength(1); col++)
                 {
-                    if (grid[row, col] == 0 && used.All(x => x.row != row && x.col != col))
+                    if (grid[row, col] == 0 && IsBoxEmpty(grid, (row, col), size) && used.All(x => x.row != row && x.col != col) )
                     {
                         return (row, col);
                     }
