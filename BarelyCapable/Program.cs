@@ -13,8 +13,7 @@ namespace BarelyCapable
         static void Main(string[] args)
         {
             var root = JsonConvert.DeserializeObject<Root>(File.ReadAllText("shapes_file.json"));
-            _input = ParseInput(File.ReadAllLines("map_2.input"), root.shapes);
-
+            _input = ParseInput(File.ReadAllLines("map_3.input"), root.shapes);
             var grid = new int[_input.Rows, _input.Cols];
 
             foreach (var reservedSpacePosition in _input.ReservedSpacePositions)
@@ -161,7 +160,7 @@ namespace BarelyCapable
             {
                 for (int col = last.col; col < grid.GetLength(1); col++)
                 {
-                    if (grid[row, col] == 0 && IsBoxEmpty(grid, (row, col), size) && used.All(x => x.row != row && x.col != col) )
+                    if (grid[row, col] == 0 && IsBoxEmpty(grid, (row, col), size) && used.All(x => x.row != row && x.col != col))
                     {
                         return (row, col);
                     }
@@ -232,7 +231,16 @@ namespace BarelyCapable
 
                 for (var j = 0; j < shapeCount; j++)
                 {
-                    input.AvailableShapes.Add(JsonConvert.DeserializeObject<Shape>(JsonConvert.SerializeObject(shapes.Find(s => s.shape_id == shapeId))));
+                    var item = shapes.Find(s => s.shape_id == shapeId);
+                    input.AvailableShapes.Add(
+                        new Shape()
+                        {
+                            shape_id = item.shape_id,
+                            bounding_box = item.bounding_box,
+                            capacity = item.capacity,
+                            orientations = item.orientations,
+                            Places = item.Places,
+                        });
                 }
             }
 
