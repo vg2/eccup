@@ -80,7 +80,7 @@ namespace BarelyCapable
 
             foreach (var shapeType in outputShapes.GroupBy(r => r.shape_id))
             {
-                stringBuilder.Append($"Shape {shapeType.Key}, placed at ");
+                stringBuilder.Append($"{shapeType.Key}");
 
                 foreach (var shape in shapeType)
                 {
@@ -88,7 +88,7 @@ namespace BarelyCapable
                     {
                         foreach (var position in coordinate.Positions)
                         {
-                            stringBuilder.Append($"[{position.X},{position.Y}] ");
+                            stringBuilder.Append($"|{position.X},{position.Y}");
                         }
                     }
                 }
