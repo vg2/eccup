@@ -22,7 +22,7 @@ namespace BarelyCapable
                 grid[reservedSpacePosition.X, reservedSpacePosition.Y] = 1;
             }
 
-            foreach (var shape in input.AvailableShapes)
+            foreach (var shape in input.AvailableShapes.OrderByDescending(s => s.capacity).ThenBy(s => s.bounding_box))
             {
                 PlaceShape(grid, shape);
             }
