@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace BarelyCapable
 {
@@ -8,7 +9,7 @@ namespace BarelyCapable
     {
         static void Main(string[] args)
         {
-            var test = File.ReadAllLines("shapes_file.json");
+            var root = JsonConvert.DeserializeObject<Root>(File.ReadAllText("shapes_file.json"));
 
             Console.WriteLine("Hello World!");
         }
