@@ -30,7 +30,6 @@ namespace BarelyCapable
 
 
             List<Shape> shapes = input.AvailableShapes.Where(x => x.Places != null).ToList();
-            ;
 
 
             PrintOutputFile(shapes);
@@ -182,7 +181,7 @@ namespace BarelyCapable
 
                 for (var j = 0; j < shapeCount; j++)
                 {
-                    input.AvailableShapes.Add(shapes.Find(s => s.shape_id == shapeId));
+                    input.AvailableShapes.Add(JsonConvert.DeserializeObject<Shape>(JsonConvert.SerializeObject(shapes.Find(s => s.shape_id == shapeId))));
                 }
             }
 
