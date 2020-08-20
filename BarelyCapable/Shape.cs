@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConsoleApp9
+namespace BarelyCapable
 {
     public class Shape
     {

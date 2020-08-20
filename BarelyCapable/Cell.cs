@@ -4,8 +4,7 @@ using System.Text;
 
 namespace BarelyCapable
 {
-    public class Orientation
+    public class Cell
     {
-        public int Rotation { get; set; }
     }
 }
