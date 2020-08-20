@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace BarelyCapable
@@ -12,7 +12,78 @@ namespace BarelyCapable
         {
             var root = JsonConvert.DeserializeObject<Root>(File.ReadAllText("shapes_file.json"));
             var input = ParseInput(File.ReadAllLines("map_1.input"), root.shapes);
-            Console.WriteLine("Hello World!");
+
+            List<Shape> shapes = new List<Shape>()
+            {
+                new Shape(){
+                    shape_id = 1,
+                    orientations = new List<Orientation>()
+                    {
+                        new Orientation()
+                        {
+                            cells = new List<List<int>>()
+                            {
+                                new List<int>()
+                                {
+                                    0, 0
+                                },
+                                new List<int>()
+                                {
+                                    0, 1
+                                }
+                            }
+                        }
+                    }
+                },
+                new Shape(){
+                    shape_id = 2,
+                    orientations = new List<Orientation>()
+                    {
+                        new Orientation()
+                        {
+                            cells = new List<List<int>>()
+                            {
+                                new List<int>()
+                                {
+                                    10, 10
+                                },
+                                new List<int>()
+                                {
+                                    10, 11
+                                }
+                            }
+                        }
+                    }
+                },
+            };
+
+
+            PrintOutputFile(shapes);
+        }
+
+        private static void PrintOutputFile(List<Shape> outputShapes)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (var shapeType in outputShapes.GroupBy(r => r.shape_id))
+            {
+                stringBuilder.Append($"Shape {shapeType.Key}, placed at ");
+
+                foreach (var shape in shapeType)
+                {
+                    foreach (var coordinate in shape.orientations)
+                    {
+                        foreach (var position in coordinate.Positions)
+                        {
+                            stringBuilder.Append($"[{position.X},{position.Y}] ");
+                        }
+                    }
+                }
+
+                stringBuilder.AppendLine();
+            }
+
+            File.WriteAllText("output_file.txt", stringBuilder.ToString().TrimEnd());
         }
 
 
@@ -66,12 +137,12 @@ namespace BarelyCapable
             input.ReservedSpaces = int.Parse(reservedCellsCount);
 
             input.AvailableShapes = new List<Shape>();
-            for(var i = 3; i < 3 + input.UniqueShapes; i++)
+            for (var i = 3; i < 3 + input.UniqueShapes; i++)
             {
                 var shapeEntry = lines[i].Split(',');
                 var shapeId = int.Parse(shapeEntry[0]);
                 var shapeCount = int.Parse(shapeEntry[1]);
-                
+
                 for (var j = 0; j < shapeCount; j++)
                 {
                     input.AvailableShapes.Add(shapes.Find(s => s.shape_id == shapeId));
@@ -83,7 +154,8 @@ namespace BarelyCapable
             foreach (var blockedCell in blockedCells)
             {
                 var xy = blockedCell.Split(',');
-                input.ReservedSpacePositions.Add(new Position {
+                input.ReservedSpacePositions.Add(new Position
+                {
                     X = int.Parse(xy[0]),
                     Y = int.Parse(xy[1])
                 });
